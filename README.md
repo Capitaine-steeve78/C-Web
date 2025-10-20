@@ -1,2 +1,2 @@
 # C-Web
-Official repository of the project -Web !
+Official repository of the project C-Web !
