@@ -12,4 +12,4 @@ what is C-Web ?
   And to make inernet better Capitaine-Steeve78 maked the project **C-Web**, the newest internet, most secure, most easy and most safe !
   > the project have started the 5 october 2025
 
-idk why i can add to this file..
+idk why i can add to this file...
