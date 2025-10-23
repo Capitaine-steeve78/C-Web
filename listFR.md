@@ -9,13 +9,13 @@ C-Web protocol : <br>
 - . . . . utilises les IPc (IP cos) au format <paysID>.<fournisseur>.<COS account ID>.<personnalisé>.<personnalisé>.{etc...}
   
 format de packet : <br>
--     CWP                              | indique que c'est un pacquet CWP
--     metadata:                        | donne les métadonné
--       CWP-version: 1.0.0             | version du paquet
--       CWP-v_compat: 1.x.x, 0.5.x     | version oompatible avec ce packet
--       from: 1.sfr.1.1                | IPc source
--       to: 1.sfr.1.2                  | IPc cible
--     data:                            | donne les données du paquet
--       <content>                      | contenu du packet
--     end                              | indique la fin du packet
+-     CWP                                | indique que c'est un pacquet CWP
+-       metadata:                        | donne les métadonné
+-         CWP-version: 1.0.0             | version du paquet
+-         CWP-v-compat: 1.x.x, 0.5.x     | version oompatible avec ce packet
+-         from: 1.sfr.1.1                | IPc source
+-         to: 1.sfr.1.2                  | IPc cible
+-       data:                            | donne les données du paquet
+-         <content>                      | contenu du packet
+-     end                                | indique la fin du packet
 __formatage des paquets non définitive__
