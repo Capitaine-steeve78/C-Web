@@ -1,8 +1,8 @@
 # C-Web
 
 C-Web © Capitaine_steeve78
-C-Web is under the **licence CC BY-NC-SA 4.0**
-licence : https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+C-Web is under the **license CC BY-NC-SA 4.0**
+license : https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 
 Official repository of the project C-Web !
 
@@ -12,9 +12,11 @@ what is C-Web ?
   And to make internet better Capitaine-Steeve78 maked the project **C-Web**, the newest internet, most secure, most easy and most safe !
   > the project have started the 5 october 2025
 
-idk what i can add to this file...
+
 
 - [ ] structure of the protocol
 - [ ] 
 
 https://discord.gg/XjSUzvQ22P
+
+idk what i can add to this file...
