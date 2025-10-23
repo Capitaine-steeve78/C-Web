@@ -18,4 +18,4 @@ format de packet : <br>
 -     data:                            | donne les données du paquet
 -       <content>                      | contenu du packet
 -     end                              | indique la fin du packet
-# formatage des paquets non définitive
+__formatage des paquets non définitive__
