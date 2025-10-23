@@ -2,7 +2,8 @@
 
 C-Web © Capitaine_steeve78
 C-Web is under the **license CC BY-NC-SA 4.0**
-license : https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+license : 
+[License Link](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
 
 Official repository of the project C-Web !
 
@@ -17,6 +18,6 @@ what is C-Web ?
 - [ ] structure of the protocol
 - [ ] 
 
-https://discord.gg/XjSUzvQ22P
+[Discord](https://discord.gg/XjSUzvQ22P)
 
 idk what i can add to this file...
