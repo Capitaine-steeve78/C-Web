@@ -13,3 +13,6 @@ what is C-Web ?
   > the project have started the 5 october 2025
 
 idk what i can add to this file...
+
+- [ ] structure of the protocol
+- [ ] 
