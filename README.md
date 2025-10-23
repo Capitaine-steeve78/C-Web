@@ -16,3 +16,5 @@ idk what i can add to this file...
 
 - [ ] structure of the protocol
 - [ ] 
+
+https://discord.gg/XjSUzvQ22P
