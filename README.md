@@ -24,6 +24,6 @@ what is C-Web ?
 - [ ] structure of the protocol
 - [ ] 
 
-[Discord](https://discord.gg/XjSUzvQ22P)
+[Discord](https://discord.gg/XjSUzvQ22P) (under build)
 
 Idk what I can add to this file...
