@@ -2,11 +2,12 @@ name: Daily Traffic Report
 
 on:
   schedule:
+    # Tous les jours à 17h UTC = 18h heure française
     - cron: '0 17 * * *'
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: read  # Nécessaire pour lire les stats du dépôt
 
 jobs:
   report:
@@ -18,12 +19,12 @@ jobs:
         run: |
           echo "Fetching GitHub traffic data..."
 
-          # Récupère les vues
+          # --- Récupération des vues ---
           curl -s -H "Accept: application/vnd.github+json" \
                -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
                https://api.github.com/repos/${{ github.repository }}/traffic/views > views.json
 
-          # Récupère les clones
+          # --- Récupération des clones ---
           curl -s -H "Accept: application/vnd.github+json" \
                -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
                https://api.github.com/repos/${{ github.repository }}/traffic/clones > clones.json
@@ -31,7 +32,7 @@ jobs:
           echo "Views API response:"; cat views.json
           echo "Clones API response:"; cat clones.json
 
-          # Extraction des valeurs (si vide => 0)
+          # --- Extraction des valeurs ---
           VIEWS=$(jq '.count // 0' views.json)
           UNIQUE_VIEWS=$(jq '.uniques // 0' views.json)
           CLONES=$(jq '.count // 0' clones.json)
@@ -59,25 +60,27 @@ jobs:
           UNIQUE_CLONES=${{ steps.traffic.outputs.unique_clones }}
           DATE=${{ steps.traffic.outputs.date }}
 
-          # Création du message Discord
-          PAYLOAD=$(jq -n --arg date "$DATE" \
-                        --arg views "$VIEWS" \
-                        --arg uviews "$UNIQUE_VIEWS" \
-                        --arg clones "$CLONES" \
-                        --arg uclones "$UNIQUE_CLONES" \
-                        '{
-                          "embeds": [{
-                            "title": "📊 Rapport GitHub du " + $date,
-                            "color": 5814783,
-                            "fields": [
-                              {"name": "👁️ Vues totales", "value": $views, "inline": true},
-                              {"name": "👤 Visiteurs uniques", "value": $uviews, "inline": true},
-                              {"name": "📦 Clones", "value": $clones, "inline": true},
-                              {"name": "🧑‍💻 Cloneurs uniques", "value": $uclones, "inline": true}
-                            ],
-                            "footer": {"text": "GitHub Actions • ${GITHUB_REPOSITORY}"}
-                          }]
-                        }')
+          # Création du message Discord (version corrigée sans bug jq)
+          PAYLOAD=$(jq -n \
+            --arg date "$DATE" \
+            --arg views "$VIEWS" \
+            --arg uviews "$UNIQUE_VIEWS" \
+            --arg clones "$CLONES" \
+            --arg uclones "$UNIQUE_CLONES" \
+            --arg repo "${{ github.repository }}" \
+            '{
+              "embeds": [{
+                "title": "📊 Rapport GitHub du \($date)",
+                "color": 5814783,
+                "fields": [
+                  {"name": "👁️ Vues totales", "value": $views, "inline": true},
+                  {"name": "👤 Visiteurs uniques", "value": $uviews, "inline": true},
+                  {"name": "📦 Clones", "value": $clones, "inline": true},
+                  {"name": "🧑‍💻 Cloneurs uniques", "value": $uclones, "inline": true}
+                ],
+                "footer": {"text": "GitHub Actions • \($repo)"}
+              }]
+            }')
 
           # Envoi à Discord
           curl -X POST -H "Content-Type: application/json" \
