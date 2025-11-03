@@ -5,6 +5,9 @@ on:
     - cron: '0 17 * * *'  # Tous les jours à 18h (heure de France, hiver)
   workflow_dispatch:
 
+permissions:
+  contents: read 
+
 jobs:
   report:
     runs-on: ubuntu-latest
