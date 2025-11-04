@@ -3,6 +3,7 @@ name: 📊 Daily GitHub Traffic Report
 on:
   schedule:
     - cron: "0 17 * * *"
+    - cron: "59 23 * * *"
   workflow_dispatch:
 
 jobs:
