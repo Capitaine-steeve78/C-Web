@@ -61,9 +61,9 @@ jobs:
 
           PAYLOAD=$(jq -n \
             --arg title "📊 Rapport GitHub du $DATE" \
-            --arg desc "**📅 Aujourd’hui :**\n• Vues : ${{ env.TODAY_VIEWS }} (uniques : ${{ env.TODAY_UNIQUE_VIEWS }})\n• Clones : ${{ env.TODAY_CLONES }} (uniques : ${{ env.TODAY_UNIQUE_CLONES }})\n\n**📊 14 derniers jours :**\n• Vues totales : ${{ env.TOTAL_VIEWS }} (uniques : ${{ env.UNIQUE_VIEWS }})\n• Clones totaux : ${{ env.TOTAL_CLONES }} (uniques : ${{ env.UNIQUE_CLONES }})" \
+            --arg desc "**📅 Aujourd’hui :**\\u000A• Vues : ${{ env.TODAY_VIEWS }} (uniques : ${{ env.TODAY_UNIQUE_VIEWS }})\\u000A• Clones : ${{ env.TODAY_CLONES }} (uniques : ${{ env.TODAY_UNIQUE_CLONES }})\\u000A\\u000A**📊 14 derniers jours :**\\u000A• Vues totales : ${{ env.TOTAL_VIEWS }} (uniques : ${{ env.UNIQUE_VIEWS }})\\u000A• Clones totaux : ${{ env.TOTAL_CLONES }} (uniques : ${{ env.UNIQUE_CLONES }})" \
             '{embeds: [{title: $title, description: $desc, color: 5814783}]}')
 
           curl -s -H "Content-Type: application/json" \
-               -d "$PAYLOAD" \
-               "${{ secrets.DISCORD_WEBHOOK }}"
+            -d "$PAYLOAD" \
+           "${{ secrets.DISCORD_WEBHOOK }}"
