@@ -1,87 +1,65 @@
-name: Daily Traffic Report
+name: 📊 Daily GitHub Traffic Report
 
 on:
   schedule:
-    # Tous les jours à 17h UTC = 18h heure française
-    - cron: '0 17 * * *'
-  workflow_dispatch:
-
-permissions:
-  contents: read  # Nécessaire pour lire les stats du dépôt
+    - cron: "0 17 * * *"  # Tous les jours à 18h UTC
+  workflow_dispatch:       # Permet de le lancer manuellement
 
 jobs:
-  report:
+  send_traffic_report:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get traffic stats
-        id: traffic
+      - name: 🕒 Set date
+        run: echo "DATE=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: 📥 Fetch GitHub traffic data
+        id: fetch
         run: |
           echo "Fetching GitHub traffic data..."
 
-          # --- Récupération des vues ---
-          curl -s -H "Accept: application/vnd.github+json" \
-               -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-               https://api.github.com/repos/${{ github.repository }}/traffic/views > views.json
+          TOKEN="${{ secrets.PERSONAL_TOKEN || secrets.GITHUB_TOKEN }}"
+          OWNER=$(echo "${{ github.repository }}" | cut -d'/' -f1)
+          REPO=$(echo "${{ github.repository }}" | cut -d'/' -f2)
 
-          # --- Récupération des clones ---
-          curl -s -H "Accept: application/vnd.github+json" \
-               -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-               https://api.github.com/repos/${{ github.repository }}/traffic/clones > clones.json
+          # Views
+          VIEWS_JSON=$(curl -s -H "Accept: application/vnd.github+json" \
+                            -H "Authorization: Bearer $TOKEN" \
+                            "https://api.github.com/repos/$OWNER/$REPO/traffic/views")
 
-          echo "Views API response:"; cat views.json
-          echo "Clones API response:"; cat clones.json
+          # Clones
+          CLONES_JSON=$(curl -s -H "Accept: application/vnd.github+json" \
+                             -H "Authorization: Bearer $TOKEN" \
+                             "https://api.github.com/repos/$OWNER/$REPO/traffic/clones")
 
-          # --- Extraction des valeurs ---
-          VIEWS=$(jq '.count // 0' views.json)
-          UNIQUE_VIEWS=$(jq '.uniques // 0' views.json)
-          CLONES=$(jq '.count // 0' clones.json)
-          UNIQUE_CLONES=$(jq '.uniques // 0' clones.json)
-          DATE=$(date '+%d/%m/%Y')
+          echo "Views API response: $VIEWS_JSON"
+          echo "Clones API response: $CLONES_JSON"
 
-          echo "views=$VIEWS" >> $GITHUB_OUTPUT
-          echo "unique_views=$UNIQUE_VIEWS" >> $GITHUB_OUTPUT
-          echo "clones=$CLONES" >> $GITHUB_OUTPUT
-          echo "unique_clones=$UNIQUE_CLONES" >> $GITHUB_OUTPUT
-          echo "date=$DATE" >> $GITHUB_OUTPUT
+          # Extract totals
+          TOTAL_VIEWS=$(echo "$VIEWS_JSON" | jq -r '.count // 0')
+          UNIQUE_VIEWS=$(echo "$VIEWS_JSON" | jq -r '.uniques // 0')
+          TOTAL_CLONES=$(echo "$CLONES_JSON" | jq -r '.count // 0')
+          UNIQUE_CLONES=$(echo "$CLONES_JSON" | jq -r '.uniques // 0')
 
-      - name: Send report to Discord
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          echo "TOTAL_VIEWS=$TOTAL_VIEWS" >> $GITHUB_ENV
+          echo "UNIQUE_VIEWS=$UNIQUE_VIEWS" >> $GITHUB_ENV
+          echo "TOTAL_CLONES=$TOTAL_CLONES" >> $GITHUB_ENV
+          echo "UNIQUE_CLONES=$UNIQUE_CLONES" >> $GITHUB_ENV
+
+      - name: 💬 Send to Discord
+        if: ${{ env.TOTAL_VIEWS != '' }}
         run: |
-          if [ -z "$DISCORD_WEBHOOK" ]; then
-            echo "❌ Webhook Discord manquant dans les secrets !"
-            exit 1
-          fi
+          DATE="${{ env.DATE }}"
+          VIEWS="${{ env.TOTAL_VIEWS }}"
+          UVIEWS="${{ env.UNIQUE_VIEWS }}"
+          CLONES="${{ env.TOTAL_CLONES }}"
+          UCLONES="${{ env.UNIQUE_CLONES }}"
 
-          VIEWS=${{ steps.traffic.outputs.views }}
-          UNIQUE_VIEWS=${{ steps.traffic.outputs.unique_views }}
-          CLONES=${{ steps.traffic.outputs.clones }}
-          UNIQUE_CLONES=${{ steps.traffic.outputs.unique_clones }}
-          DATE=${{ steps.traffic.outputs.date }}
-
-          # Création du message Discord (version corrigée sans bug jq)
           PAYLOAD=$(jq -n \
-            --arg date "$DATE" \
-            --arg views "$VIEWS" \
-            --arg uviews "$UNIQUE_VIEWS" \
-            --arg clones "$CLONES" \
-            --arg uclones "$UNIQUE_CLONES" \
-            --arg repo "${{ github.repository }}" \
-            '{
-              "embeds": [{
-                "title": "📊 Rapport GitHub du \($date)",
-                "color": 5814783,
-                "fields": [
-                  {"name": "👁️ Vues totales", "value": $views, "inline": true},
-                  {"name": "👤 Visiteurs uniques", "value": $uviews, "inline": true},
-                  {"name": "📦 Clones", "value": $clones, "inline": true},
-                  {"name": "🧑‍💻 Cloneurs uniques", "value": $uclones, "inline": true}
-                ],
-                "footer": {"text": "GitHub Actions • \($repo)"}
-              }]
-            }')
+            --arg title "📊 Rapport GitHub du $DATE" \
+            --arg desc "**Vues totales :** $VIEWS\n**Vues uniques :** $UVIEWS\n**Clones totaux :** $CLONES\n**Clones uniques :** $UCLONES" \
+            '{embeds: [{title: $title, description: $desc, color: 5814783}]}')
 
-          # Envoi à Discord
-          curl -X POST -H "Content-Type: application/json" \
-               -d "$PAYLOAD" "$DISCORD_WEBHOOK"
+          curl -s -H "Content-Type: application/json" \
+               -d "$PAYLOAD" \
+               "${{ secrets.DISCORD_WEBHOOK }}"
