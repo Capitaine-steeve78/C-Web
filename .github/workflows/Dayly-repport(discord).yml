@@ -2,7 +2,7 @@ name: 📊 Daily GitHub Traffic Report
 
 on:
   schedule:
-    - cron: "0 17 * * *"  # Tous les jours à 18h UTC
+    - cron: "0 17 * * *"
   workflow_dispatch:
 
 jobs:
@@ -61,26 +61,27 @@ jobs:
             --arg tuviews "$TODAY_UNIQUE_VIEWS" \
             --arg tclones "$TODAY_CLONES" \
             --arg tuclones "$TODAY_UNIQUE_CLONES" \
-            '{
-              "embeds": [{
-                "title": "📊 Rapport GitHub du \($date)",
-                "color": 5814783,
-                "fields": [
-                  {"name": "📅 Aujourd’hui", "value": "—", "inline": false},
-                  {"name": "👁️ Vues", "value": $tviews, "inline": true},
-                  {"name": "👤 Visiteurs uniques", "value": $tuviews, "inline": true},
-                  {"name": "📦 Clones", "value": $tclones, "inline": true},
-                  {"name": "🧑‍💻 Cloneurs uniques", "value": $tuclones, "inline": true},
-                  {"name": "📊 Sur 14 jours", "value": "—", "inline": false},
-                  {"name": "👁️ Vues totales", "value": $views, "inline": true},
-                  {"name": "👤 Visiteurs uniques", "value": $uviews, "inline": true},
-                  {"name": "📦 Clones totaux", "value": $clones, "inline": true},
-                  {"name": "🧑‍💻 Cloneurs uniques", "value": $uclones, "inline": true}
-                ],
-                "footer": {"text": "GitHub Actions • \($repo)"}
-              }]
+            '{ 
+              "content": "<@1012992849547104316>", 
+              "embeds": [{ 
+                "title": "📊 Rapport GitHub du \($date)", 
+                "color": 5814783, 
+                "fields": [ 
+                  {"name": "📅 Aujourd’hui", "value": "—", "inline": false}, 
+                  {"name": "👁️ Vues", "value": $tviews, "inline": true}, 
+                  {"name": "👤 Visiteurs uniques", "value": $tuviews, "inline": true}, 
+                  {"name": "📦 Clones", "value": $tclones, "inline": true}, 
+                  {"name": "🧑‍💻 Cloneurs uniques", "value": $tuclones, "inline": true}, 
+                  {"name": "📊 Sur 14 jours", "value": "—", "inline": false}, 
+                  {"name": "👁️ Vues totales", "value": $views, "inline": true}, 
+                  {"name": "👤 Visiteurs uniques", "value": $uviews, "inline": true}, 
+                  {"name": "📦 Clones totaux", "value": $clones, "inline": true}, 
+                  {"name": "🧑‍💻 Cloneurs uniques", "value": $uclones, "inline": true} 
+                ], 
+                "footer": {"text": "GitHub Actions • \($repo)"} 
+              }] 
             }')
 
           curl -s -H "Content-Type: application/json" \
-            -d "$PAYLOAD" \
-            "${{ secrets.DISCORD_WEBHOOK }}"
+               -d "$PAYLOAD" \
+               "${{ secrets.DISCORD_WEBHOOK }}"
