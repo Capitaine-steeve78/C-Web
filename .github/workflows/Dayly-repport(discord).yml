@@ -64,7 +64,7 @@ jobs:
             '{ 
               "content": "<@1012992849547104316>", 
               "embeds": [{ 
-                "title": "📊 Rapport GitHub du \($date)", 
+                "title": " > 📊 Rapport GitHub du \($date)", 
                 "color": 5814783, 
                 "fields": [ 
                   {"name": "📅 Aujourd’hui", "value": "—---------------", "inline": false}, 
@@ -72,8 +72,7 @@ jobs:
                   {"name": "👤 Visiteurs uniques", "value": $tuviews, "inline": true}, 
                   {"name": "📦 Clones", "value": $tclones, "inline": true}, 
                   {"name": "🧑‍💻 Cloneurs uniques", "value": $tuclones, "inline": true},
-                  {"name": " ", "value": " ", "inline": false},
-                  {"name": "📊 Sur 14 jours", "value": "—---------------", "inline": false}, 
+                  {"name": " > 📊 Sur 14 jours", "value": "—---------------", "inline": false}, 
                   {"name": "👁️ Vues totales", "value": $views, "inline": true}, 
                   {"name": "👤 Visiteurs uniques", "value": $uviews, "inline": true}, 
                   {"name": "📦 Clones totaux", "value": $clones, "inline": true}, 
