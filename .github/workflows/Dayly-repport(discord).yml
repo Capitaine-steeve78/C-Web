@@ -1,4 +1,6 @@
 name: 📊 Daily GitHub Traffic Report
+permissions:
+  contents: read
 
 on:
   schedule:
