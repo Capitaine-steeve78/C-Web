@@ -15,7 +15,7 @@ body {
   background-color: #000;
   color: #ddd;
   line-height: 1.6;
-  overflow-x: hidden; /* empêche les débordements sur mobile */
+  overflow-x: hidden;
 }
 
 /* ============ NAVBAR ============ */
@@ -136,11 +136,11 @@ pre {
   border-radius: 10px;
   border: 1px solid #444;
   white-space: pre;          
-  display: inline-block;     /* s'adapte au contenu */
+  display: inline-block;
   box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-  width: fit-content;        /* s'adapte vraiment au texte */
-  max-width: 100%;           /* mais ne dépasse pas l'écran */
-  overflow-x: auto;          /* permet de scroller si c’est trop long */
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 code {
@@ -204,3 +204,4 @@ footer {
     padding: 8px 10px;
   }
 }
+
