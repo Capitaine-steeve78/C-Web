@@ -1,7 +1,3 @@
-_Are people really interested in my project or is it just bots?_
-
-
-
 # C-Web
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 ![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/Capitaine-steeve78/C-Web/latest/total?label=total%20download%20(latest))
