@@ -20,4 +20,15 @@ format de packet : <br>
          <content>                      | contenu du packet
      end                                | indique la fin du packet
 ```
+
+
+different mode :
+
+- le mode normal, C-Web classique qui serait la version standard 
+- C-Web Ultra Fast, qui serait optimisé pour oa vitesse au lieux de la qualité 
+- C-Web Quality, qui serai plutôt pour etre sur que le packet arrive en un seul morceau 
+- C-Web Bridge, qui permettrait de faire passer C-Web par IPv6 pour ameliorer la transition 
+
+
+
 __formatage des paquets non définitive__
