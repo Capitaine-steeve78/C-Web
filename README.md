@@ -4,7 +4,7 @@
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/Capitaine-steeve78/C-Web/total?label=total%20download)
 ![Relative date](https://img.shields.io/date/1767222001?label=development%20is%20scheduled%20to%20begin&color=FF0000)
 
------The project will probably start in early 2026 !-----
+-----The project will ~probably~ certainly start in early 2026 !-----
 
 C-Web © Capitaine_steeve78
 C-Web is under the **license CC BY-NC-SA 4.0**
