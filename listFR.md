@@ -32,3 +32,20 @@ different mode :
 
 
 __formatage des paquets non définitive__
+
+
+
+
+
+
+
+Windows
+Build system : CMake
+Generator / Build tool : Ninja
+Compilateur C/C++ : MSVC (via Visual Studio)
+Standard Library : MSVC STL
+Linux / macOS
+Build system : CMake
+Generator / Build tool : Ninja
+Compilateur C/C++ : Clang (Linux ou macOS)
+Standard Library : libc++
