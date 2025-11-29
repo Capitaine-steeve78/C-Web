@@ -39,13 +39,13 @@ __formatage des paquets non définitive__
 
 
 
-Windows
-Build system : CMake
-Generator / Build tool : Ninja
-Compilateur C/C++ : MSVC (via Visual Studio)
-Standard Library : MSVC STL
-Linux / macOS
-Build system : CMake
-Generator / Build tool : Ninja
-Compilateur C/C++ : Clang (Linux ou macOS)
-Standard Library : libc++
+Windows <br>
+Build system : CMake<br>
+Generator / Build tool : Ninja<br>
+Compilateur C/C++ : MSVC (via Visual Studio)<br>
+Standard Library : MSVC STL<br>
+Linux / macOS<br>
+Build system : CMake<br>
+Generator / Build tool : Ninja<br>
+Compilateur C/C++ : Clang (Linux ou macOS)<br>
+Standard Library : libc++<br>
