@@ -1,0 +1,92 @@
+name: V2📊 Daily GitHub Traffic Report
+
+permissions:
+  contents: read
+  metadata: read
+
+on:
+  schedule:
+    - cron: "15 17 * * *"
+  workflow_dispatch:
+
+jobs:
+  send_traffic_report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🕒 Set date
+        run: echo "DATE=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: 📥 Fetch GitHub traffic data
+        id: fetch
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          OWNER=$(echo "${{ github.repository }}" | cut -d'/' -f1)
+          REPO=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+
+          VIEWS_JSON=$(curl -s -H "Accept: application/vnd.github+json" \
+                            -H "Authorization: Bearer $TOKEN" \
+                            "https://api.github.com/repos/$OWNER/$REPO/traffic/views")
+
+          CLONES_JSON=$(curl -s -H "Accept: application/vnd.github+json" \
+                             -H "Authorization: Bearer $TOKEN" \
+                             "https://api.github.com/repos/$OWNER/$REPO/traffic/clones")
+
+          echo "TOTAL_VIEWS=$(echo "$VIEWS_JSON" | jq -r '.count // 0')" >> $GITHUB_ENV
+          echo "UNIQUE_VIEWS=$(echo "$VIEWS_JSON" | jq -r '.uniques // 0')" >> $GITHUB_ENV
+          echo "TOTAL_CLONES=$(echo "$CLONES_JSON" | jq -r '.count // 0')" >> $GITHUB_ENV
+          echo "UNIQUE_CLONES=$(echo "$CLONES_JSON" | jq -r '.uniques // 0')" >> $GITHUB_ENV
+
+          echo "TODAY_VIEWS=$(echo "$VIEWS_JSON" | jq -r '.views[-1].count // 0')" >> $GITHUB_ENV
+          echo "TODAY_UNIQUE_VIEWS=$(echo "$VIEWS_JSON" | jq -r '.views[-1].uniques // 0')" >> $GITHUB_ENV
+          echo "TODAY_CLONES=$(echo "$CLONES_JSON" | jq -r '.clones[-1].count // 0')" >> $GITHUB_ENV
+          echo "TODAY_UNIQUE_CLONES=$(echo "$CLONES_JSON" | jq -r '.clones[-1].uniques // 0')" >> $GITHUB_ENV
+
+      - name: 💬 Send to Discord
+        env:
+          DATE: ${{ env.DATE }}
+          VIEWS: ${{ env.TOTAL_VIEWS }}
+          UNIQUE_VIEWS: ${{ env.UNIQUE_VIEWS }}
+          CLONES: ${{ env.TOTAL_CLONES }}
+          UNIQUE_CLONES: ${{ env.UNIQUE_CLONES }}
+          TODAY_VIEWS: ${{ env.TODAY_VIEWS }}
+          TODAY_UNIQUE_VIEWS: ${{ env.TODAY_UNIQUE_VIEWS }}
+          TODAY_CLONES: ${{ env.TODAY_CLONES }}
+          TODAY_UNIQUE_CLONES: ${{ env.TODAY_UNIQUE_CLONES }}
+        run: |
+          PAYLOAD=$(jq -n \
+            --arg date "$DATE" \
+            --arg repo "${{ github.repository }}" \
+            --arg views "$VIEWS" \
+            --arg uviews "$UNIQUE_VIEWS" \
+            --arg clones "$CLONES" \
+            --arg uclones "$UNIQUE_CLONES" \
+            --arg tviews "$TODAY_VIEWS" \
+            --arg tuviews "$TODAY_UNIQUE_VIEWS" \
+            --arg tclones "$TODAY_CLONES" \
+            --arg tuclones "$TODAY_UNIQUE_CLONES" \
+            '{ 
+              "content": "<@1012992849547104316>", 
+              "embeds": [{ 
+                "title": " > 📊 Rapport GitHub du \($date)", 
+                "color": 5814783, 
+                "fields": [ 
+                  {"name": "📅 Aujourd’hui", "value": "—---------------", "inline": false}, 
+                  {"name": "👁️ Vues", "value": $tviews, "inline": true}, 
+                  {"name": "👤 Visiteurs uniques", "value": $tuviews, "inline": true}, 
+                  {"name": "📦 Clones", "value": $tclones, "inline": true}, 
+                  {"name": "🧑‍💻 Cloneurs uniques", "value": $tuclones, "inline": true},
+                  {"name": " > 📊 Sur 14 jours", "value": "—---------------", "inline": false}, 
+                  {"name": "👁️ Vues totales", "value": $views, "inline": true}, 
+                  {"name": "👤 Visiteurs uniques", "value": $uviews, "inline": true}, 
+                  {"name": "📦 Clones totaux", "value": $clones, "inline": true}, 
+                  {"name": "🧑‍💻 Cloneurs uniques", "value": $uclones, "inline": true} 
+                ], 
+                "footer": {"text": "GitHub Actions • \($repo)"} 
+              }] 
+            }')
+
+          curl -s -H "Content-Type: application/json" \
+               -d "$PAYLOAD" \
+               "${{ secrets.DISCORD_WEBHOOK }}"
