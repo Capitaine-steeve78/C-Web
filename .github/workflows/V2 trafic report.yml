@@ -17,31 +17,63 @@ jobs:
       - name: 🕒 Set date
         run: echo "DATE=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
 
-      - name: 📥 Fetch GitHub traffic data
+      - name: ✅ Ensure jq is installed
+        run: |
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y jq
+          fi
+
+      - name: 🔐 Prepare token
+        run: |
+          # If you set a PAT in secrets.PAT_TOKEN it will be used (recommended for private repos/traffic access).
+          # Otherwise fall back to the automatically provided GITHUB_TOKEN.
+          if [ -n "${{ secrets.PAT_TOKEN }}" ]; then
+            echo "TOKEN=${{ secrets.PAT_TOKEN }}" >> $GITHUB_ENV
+          else
+            echo "TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+          fi
+
+      - name: 📥 Fetch GitHub traffic data (with checks)
         id: fetch
         env:
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN: ${{ env.TOKEN }}
         run: |
           OWNER=$(echo "${{ github.repository }}" | cut -d'/' -f1)
           REPO=$(echo "${{ github.repository }}" | cut -d'/' -f2)
 
-          VIEWS_JSON=$(curl -s -H "Accept: application/vnd.github+json" \
-                            -H "Authorization: Bearer $TOKEN" \
-                            "https://api.github.com/repos/$OWNER/$REPO/traffic/views")
+          # Fetch views
+          HTTP_VIEWS=$(mktemp)
+          HTTP_CLONES=$(mktemp)
 
-          CLONES_JSON=$(curl -s -H "Accept: application/vnd.github+json" \
-                             -H "Authorization: Bearer $TOKEN" \
-                             "https://api.github.com/repos/$OWNER/$REPO/traffic/clones")
+          HTTP_CODE_VIEWS=$(curl -sS -w "%{http_code}" -o $HTTP_VIEWS -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $TOKEN" "https://api.github.com/repos/$OWNER/$REPO/traffic/views")
+          HTTP_CODE_CLONES=$(curl -sS -w "%{http_code}" -o $HTTP_CLONES -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $TOKEN" "https://api.github.com/repos/$OWNER/$REPO/traffic/clones")
 
+          if [ "$HTTP_CODE_VIEWS" -ne 200 ]; then
+            echo "Failed to fetch views: HTTP $HTTP_CODE_VIEWS. Response:"
+            cat $HTTP_VIEWS || true
+            exit 1
+          fi
+
+          if [ "$HTTP_CODE_CLONES" -ne 200 ]; then
+            echo "Failed to fetch clones: HTTP $HTTP_CODE_CLONES. Response:"
+            cat $HTTP_CLONES || true
+            exit 1
+          fi
+
+          VIEWS_JSON=$(cat $HTTP_VIEWS)
+          CLONES_JSON=$(cat $HTTP_CLONES)
+
+          # Safe extraction using 'last' and fallbacks
           echo "TOTAL_VIEWS=$(echo "$VIEWS_JSON" | jq -r '.count // 0')" >> $GITHUB_ENV
           echo "UNIQUE_VIEWS=$(echo "$VIEWS_JSON" | jq -r '.uniques // 0')" >> $GITHUB_ENV
           echo "TOTAL_CLONES=$(echo "$CLONES_JSON" | jq -r '.count // 0')" >> $GITHUB_ENV
           echo "UNIQUE_CLONES=$(echo "$CLONES_JSON" | jq -r '.uniques // 0')" >> $GITHUB_ENV
 
-          echo "TODAY_VIEWS=$(echo "$VIEWS_JSON" | jq -r '.views[-1].count // 0')" >> $GITHUB_ENV
-          echo "TODAY_UNIQUE_VIEWS=$(echo "$VIEWS_JSON" | jq -r '.views[-1].uniques // 0')" >> $GITHUB_ENV
-          echo "TODAY_CLONES=$(echo "$CLONES_JSON" | jq -r '.clones[-1].count // 0')" >> $GITHUB_ENV
-          echo "TODAY_UNIQUE_CLONES=$(echo "$CLONES_JSON" | jq -r '.clones[-1].uniques // 0')" >> $GITHUB_ENV
+          echo "TODAY_VIEWS=$(echo "$VIEWS_JSON" | jq -r '(.views | last // {count:0}).count // 0')" >> $GITHUB_ENV
+          echo "TODAY_UNIQUE_VIEWS=$(echo "$VIEWS_JSON" | jq -r '(.views | last // {uniques:0}).uniques // 0')" >> $GITHUB_ENV
+          echo "TODAY_CLONES=$(echo "$CLONES_JSON" | jq -r '(.clones | last // {count:0}).count // 0')" >> $GITHUB_ENV
+          echo "TODAY_UNIQUE_CLONES=$(echo "$CLONES_JSON" | jq -r '(.clones | last // {uniques:0}).uniques // 0')" >> $GITHUB_ENV
 
       - name: 💬 Send to Discord
         env:
@@ -87,6 +119,4 @@ jobs:
               }] 
             }')
 
-          curl -s -H "Content-Type: application/json" \
-               -d "$PAYLOAD" \
-               "${{ secrets.DISCORD_WEBHOOK }}"
+          curl -s -H "Content-Type: application/json" -d "$PAYLOAD" "${{ secrets.DISCORD_WEBHOOK }}"
