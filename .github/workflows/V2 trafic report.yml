@@ -1,7 +1,8 @@
 name: V2📊 Daily GitHub Traffic Report
+
 permissions:
   contents: read
-  metadata: read # Ajout pour garantir les permissions nécessaires
+  metadata: read
 
 on:
   schedule:
@@ -13,18 +14,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: 📥 Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
       - name: 🕒 Set date
         run: echo "DATE=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: 📥 Fetch GitHub traffic data
         id: fetch
         run: |
-          # Token et information sur le repo
           TOKEN="${{ secrets.GITHUB_TOKEN }}"
           OWNER=$(echo "${{ github.repository }}" | cut -d'/' -f1)
           REPO=$(echo "${{ github.repository }}" | cut -d'/' -f2)
 
-          # API GitHub pour récupérer les données
+          # Appels API
           VIEWS_JSON=$(curl -s -H "Accept: application/vnd.github+json" \
                             -H "Authorization: Bearer $TOKEN" \
                             "https://api.github.com/repos/$OWNER/$REPO/traffic/views")
@@ -33,11 +36,9 @@ jobs:
                              -H "Authorization: Bearer $TOKEN" \
                              "https://api.github.com/repos/$OWNER/$REPO/traffic/clones")
 
-          # Debugging des données reçues (utile pour investiguer les problèmes)
-          echo "VIEWS_JSON=$VIEWS_JSON"
-          echo "CLONES_JSON=$CLONES_JSON"
+          echo "DEBUG VIEWS_JSON: $VIEWS_JSON"
+          echo "DEBUG CLONES_JSON: $CLONES_JSON"
 
-          # Extraction des données avec gestion des listes vides
           TOTAL_VIEWS=$(echo "$VIEWS_JSON" | jq -r '.count // 0')
           UNIQUE_VIEWS=$(echo "$VIEWS_JSON" | jq -r '.uniques // 0')
           TOTAL_CLONES=$(echo "$CLONES_JSON" | jq -r '.count // 0')
@@ -48,15 +49,16 @@ jobs:
           TODAY_CLONES=$(echo "$CLONES_JSON" | jq -r '.clones[-1].count // 0')
           TODAY_UNIQUE_CLONES=$(echo "$CLONES_JSON" | jq -r '.clones[-1].uniques // 0')
 
-          # Sécurisation des variables d'environnement
-          echo "TOTAL_VIEWS=$TOTAL_VIEWS" >> $GITHUB_ENV
-          echo "UNIQUE_VIEWS=$UNIQUE_VIEWS" >> $GITHUB_ENV
-          echo "TOTAL_CLONES=$TOTAL_CLONES" >> $GITHUB_ENV
-          echo "UNIQUE_CLONES=$UNIQUE_CLONES" >> $GITHUB_ENV
-          echo "TODAY_VIEWS=$TODAY_VIEWS" >> $GITHUB_ENV
-          echo "TODAY_UNIQUE_VIEWS=$TODAY_UNIQUE_VIEWS" >> $GITHUB_ENV
-          echo "TODAY_CLONES=$TODAY_CLONES" >> $GITHUB_ENV
-          echo "TODAY_UNIQUE_CLONES=$TODAY_UNIQUE_CLONES" >> $GITHUB_ENV
+          {
+            echo "TOTAL_VIEWS=$TOTAL_VIEWS"
+            echo "UNIQUE_VIEWS=$UNIQUE_VIEWS"
+            echo "TOTAL_CLONES=$TOTAL_CLONES"
+            echo "UNIQUE_CLONES=$UNIQUE_CLONES"
+            echo "TODAY_VIEWS=$TODAY_VIEWS"
+            echo "TODAY_UNIQUE_VIEWS=$TODAY_UNIQUE_VIEWS"
+            echo "TODAY_CLONES=$TODAY_CLONES"
+            echo "TODAY_UNIQUE_CLONES=$TODAY_UNIQUE_CLONES"
+          } >> $GITHUB_ENV
 
       - name: 💬 Send to Discord
         env:
@@ -81,25 +83,25 @@ jobs:
             --arg tuviews "$TODAY_UNIQUE_VIEWS" \
             --arg tclones "$TODAY_CLONES" \
             --arg tuclones "$TODAY_UNIQUE_CLONES" \
-            '{ 
-              "content": "<@1012992849547104316>", 
-              "embeds": [{ 
-                "title": " > 📊 Rapport GitHub du \($date)", 
-                "color": 5814783, 
-                "fields": [ 
-                  {"name": "📅 Aujourd’hui", "value": "—---------------", "inline": false}, 
-                  {"name": "👁️ Vues", "value": $tviews, "inline": true}, 
-                  {"name": "👤 Visiteurs uniques", "value": $tuviews, "inline": true}, 
-                  {"name": "📦 Clones", "value": $tclones, "inline": true}, 
+            '{
+              "content": "<@1012992849547104316>",
+              "embeds": [{
+                "title": " > 📊 Rapport GitHub du \($date)",
+                "color": 5814783,
+                "fields": [
+                  {"name": "📅 Aujourd’hui", "value": "—---------------", "inline": false},
+                  {"name": "👁️ Vues", "value": $tviews, "inline": true},
+                  {"name": "👤 Visiteurs uniques", "value": $tuviews, "inline": true},
+                  {"name": "📦 Clones", "value": $tclones, "inline": true},
                   {"name": "🧑‍💻 Cloneurs uniques", "value": $tuclones, "inline": true},
-                  {"name": " > 📊 Sur 14 jours", "value": "—---------------", "inline": false}, 
-                  {"name": "👁️ Vues totales", "value": $views, "inline": true}, 
-                  {"name": "👤 Visiteurs uniques", "value": $uviews, "inline": true}, 
-                  {"name": "📦 Clones totaux", "value": $clones, "inline": true}, 
-                  {"name": "🧑‍💻 Cloneurs uniques", "value": $uclones, "inline": true} 
-                ], 
-                "footer": {"text": "GitHub Actions • \($repo)"} 
-              }] 
+                  {"name": " > 📊 Sur 14 jours", "value": "—----------------", "inline": false},
+                  {"name": "👁️ Vues totales", "value": $views, "inline": true},
+                  {"name": "👤 Visiteurs uniques", "value": $uviews, "inline": true},
+                  {"name": "📦 Clones totaux", "value": $clones, "inline": true},
+                  {"name": "🧑‍💻 Cloneurs uniques", "value": $uclones, "inline": true}
+                ],
+                "footer": {"text": "GitHub Actions • \($repo)"}
+              }]
             }')
 
           curl -s -H "Content-Type: application/json" \
