@@ -2,7 +2,6 @@ name: V2📊 Daily GitHub Traffic Report
 
 permissions:
   contents: read
-  metadata: read
 
 on:
   schedule:
