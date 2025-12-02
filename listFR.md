@@ -1,3 +1,8 @@
+# IPCv2 : PPP.FFF.TTT.000.000.000.000.000.000.000.000.000.000
+P = pays
+F = FAI
+T = type de machine
+
 C-Web protocol : <br>
 . . C-Web = nom du projet <br>
 . . CWP = C.O.S. Web Protocol <br>
