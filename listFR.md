@@ -62,4 +62,4 @@ Standard Library : libc++<br>
 
 
 
-C-Gate : porte d'entré pour utiliser C-Web
+Web-Gate : porte d'entré pour utiliser C-Web
