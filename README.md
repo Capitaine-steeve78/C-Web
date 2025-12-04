@@ -22,8 +22,8 @@ what is C-Web ?
 [Discord](https://discord.gg/kkF6svhUrf)
 
 
-structure : 0% 
-other : 0%
+structure : 0% <br>
+other : 0% <br>
 
----------------------
+---------------------<br>
 final version : 0% 
