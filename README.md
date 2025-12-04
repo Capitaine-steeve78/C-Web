@@ -19,12 +19,15 @@ what is C-Web ?
   And to make internet better **C-Web** was invented to become: the newest internet, most secure, most easy and most safe.
   > the project have started the 5 october 2025
 
-[Discord](https://discord.gg/kkF6svhUrf)
+[Discord server](https://discord.gg/kkF6svhUrf)
 
 
 structure : 0% <br>
 other : 0% <br>
 
+----------------------
+<br>
+version X.X.X.X to the XX/XX/XXXX : 0%
 ---------------------
 <br>
 final version : 0% 
