@@ -28,11 +28,9 @@ other : 0% <br>
 
 ----------------------
 
-<br>
 version X.X.X.X to the XX/XX/XXXX : 0%
 <br>
 
 ---------------------
 
-<br>
 final version : 0% 
