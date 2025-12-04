@@ -25,10 +25,14 @@ what is C-Web ?
 structure : 0% <br>
 other : 0% <br>
 <br>
+
 ----------------------
+
 <br>
 version X.X.X.X to the XX/XX/XXXX : 0%
 <br>
+
 ---------------------
+
 <br>
 final version : 0% 
