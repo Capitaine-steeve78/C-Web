@@ -36,4 +36,6 @@ version X.X.X.X to the XX/XX/XXXX : 0%
 
 ---------------------
 
-final version : 0% 
+final version : 0% <br>
+<br>
+[![Stargazers over time](https://starchart.cc/Capitaine-steeve78/C-Web.svg?background=%23000000&axis=%23ffffff&line=%23ffffff)](https://starchart.cc/Capitaine-steeve78/C-Web)
