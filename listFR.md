@@ -1,7 +1,7 @@
-# IPCv2 : PPP.FFF.TTT.000.000.000.000.000.000.000.000.000.000
+# IPCv2 : PPP.FFF.XXX
 P = pays
 F = FAI
-T = type de machine
+
 
 C-Web protocol : <br>
 . . C-Web = nom du projet <br>
@@ -19,8 +19,8 @@ format de packet : <br>
        metadata:                        | donne les métadonné
          CWP-version: 1.0.0             | version du paquet
          CWP-v-compat: 1.x.x, 0.5.x     | version oompatible avec ce packet
-         from: 001.001.001.204.728.375.364.264.364.364.474.295.204                | IPcV2 source
-         to: 001.001.001.274.173.018.274.028.010.375.295.175.018                  | IPc cible
+         from: 001.001.001              | IPcV2 source
+         to: 001.001.001                | IPc cible
        data:                            | donne les données du paquet
          <content>                      | contenu du packet
      end                                | indique la fin du packet
