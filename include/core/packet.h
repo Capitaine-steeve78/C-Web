@@ -11,7 +11,15 @@
 #define MAX_PAYLOAD 256
 
 typedef struct {
+    char protocol[4];
+    char version[8];
     uint8_t type;
+    char ver_compat[20];
+    char from[64];
+    char to[64];
+}Metadata;
+typedef struct {
+    Metadata metadata;
     uint16_t length;
     uint8_t payload[MAX_PAYLOAD];
 }Packet;
