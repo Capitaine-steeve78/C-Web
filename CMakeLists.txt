@@ -1,3 +1,9 @@
+## © $today.year C-Web
+## Created by Capitaine_steeve78
+## Licensed under the Creative Commons BY-NC-SA 4.0
+##
+## Official repository: https://github.com/Capitaine-steeve78/C-Web
+
 cmake_minimum_required(VERSION 4.1)
 project(C_Web)
 

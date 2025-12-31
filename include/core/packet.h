@@ -1,4 +1,8 @@
-// Copyright (c) C-Web, under licence CC BY-NC-SA 4.0, created by Capitaine_steeve78 the 31/12/2025
+// © $today.year C-Web
+// Created by Capitaine_steeve78
+// Licensed under the Creative Commons BY-NC-SA 4.0
+//
+// Official repository: https://github.com/Capitaine-steeve78/C-Web
 
 #ifndef C_WEB_PACKET_H
 #define C_WEB_PACKET_H
