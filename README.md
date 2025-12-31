@@ -2,7 +2,9 @@
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 ![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/Capitaine-steeve78/C-Web/latest/total?label=total%20download%20(latest))
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/Capitaine-steeve78/C-Web/total?label=total%20download)
-![Relative date](https://img.shields.io/date/1767222001?label=development%20is%20scheduled%20to%20begin&color=FF0000)
+![Static Badge](https://img.shields.io/badge/started%205%20hours%20before%20the%20scheduled%20time%20!-white?style=flat&label=developpement&color=00ff00)
+
+
 
 -----The project will ~probably~ certainly start in early 2026 !-----
 
