@@ -1,4 +1,4 @@
-// © 2025-2026 C-Web
+// © 2026 C-Web
 // Created by Capitaine_steeve78
 // Licensed under the Creative Commons BY-NC-SA 4.0
 //
