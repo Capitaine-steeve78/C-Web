@@ -19,7 +19,6 @@ add_executable(C_Web
         "picture/C-Web carré.zip"
         "picture/C-Web logoV1.zip"
         "picture/C-Web rond.zip"
-        src/modules/test.md
         LICENCE.md
         README.md
         src/core/packet.c
