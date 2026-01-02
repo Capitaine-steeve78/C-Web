@@ -1,14 +1,15 @@
-// © 2025 C-Web
+// © 2025-2025 C-Web
 // Created by Capitaine_steeve78
 // Licensed under the Creative Commons BY-NC-SA 4.0
 //
 // Official repository: https://github.com/Capitaine-steeve78/C-Web
 
-# include "packet.h"
+#include "packet.h"
 #include <string.h>
 #include <stdio.h>
+#include "../../include/core/error.h"
 
-int main() {
+int main1() {
 
     Packet packet = {0};
     Metadata metadata = {0};
@@ -32,4 +33,10 @@ int main() {
     printf("To: %s\n", packet.metadata.to);
     printf("Payload: %.*s\n", packet.length, packet.payload);
     return 0;
+}
+
+int main() {
+    CWebError code = main1(); // récupère l'entier retourné
+    printf("%s\n", cweb_error_to_string(code));
+    return code;
 }

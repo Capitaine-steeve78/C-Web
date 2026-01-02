@@ -1,4 +1,4 @@
-## © 2025 C-Web
+## © 2025-2025 C-Web
 ## Created by Capitaine_steeve78
 ## Licensed under the Creative Commons BY-NC-SA 4.0
 ##
@@ -23,4 +23,6 @@ add_executable(C_Web
         LICENCE.md
         README.md
         src/core/packet.c
+        src/core/error.c
+        include/core/error.h
 )
